@@ -1,0 +1,12 @@
+{
+  "device": "0",
+  "frequency": 433920000,
+  "sample_rate": 250000,
+  "gain": "auto",
+  "protocols": [],
+  "squelch": 0,
+  "hop_interval": 0,
+  "rtl433_path": "rtl_433",
+  "extra_args": "",
+  "server_port": 8080
+}
