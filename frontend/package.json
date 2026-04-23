@@ -1,0 +1,24 @@
+{
+  "name": "rtl433-webui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "ant-design-vue": "^4.2.3",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0",
+    "echarts": "^5.5.0",
+    "vue-echarts": "^6.7.3",
+    "@ant-design/icons-vue": "^7.0.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "vite": "^5.2.0",
+    "less": "^4.2.0"
+  }
+}
