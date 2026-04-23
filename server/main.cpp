@@ -37,8 +37,8 @@ static Rtl433Config loadConfig(const std::string& path) {
         if (j.contains("protocols"))    cfg.protocols    = j["protocols"].get<std::vector<int>>();
         if (j.contains("squelch"))      cfg.squelch      = j["squelch"].get<double>();
         if (j.contains("hop_interval")) cfg.hop_interval = j["hop_interval"].get<int>();
-        if (j.contains("rtl433_path"))  cfg.rtl433_path  = j["rtl433_path"].get<std::string>();
-        if (j.contains("extra_args"))   cfg.extra_args   = j["extra_args"].get<std::string>();
+        if (j.contains("ppm"))          cfg.ppm          = j["ppm"].get<int>();
+        if (j.contains("verbosity"))    cfg.verbosity    = j["verbosity"].get<int>();
     } catch (const std::exception& e) {
         std::cerr << "Config parse error: " << e.what() << "\n";
     }
