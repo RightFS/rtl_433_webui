@@ -59,7 +59,6 @@ def main():
     for i, (web_path, mime, data) in enumerate(entries):
         varname = f'g_file_data_{i}'
         lines.append(f'static const unsigned char {varname}[] = {{')
-        hex_bytes = ', '.join(f'0x{b:02x}' for b in data)
         # wrap at 16 bytes per line
         byte_list = [f'0x{b:02x}' for b in data]
         rows = [', '.join(byte_list[j:j+16]) for j in range(0, len(byte_list), 16)]

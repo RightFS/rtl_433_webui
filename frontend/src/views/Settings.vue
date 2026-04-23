@@ -61,9 +61,10 @@
           </a-radio-group>
           <a-input-number
             v-if="gainMode === 'manual'"
-            v-model:value="form.gain"
+            v-model:value="manualGainValue"
             placeholder="e.g. 40"
             style="width:120px;margin-left:8px"
+            @change="v => form.gain = String(v)"
           />
         </a-form-item>
 
@@ -139,6 +140,7 @@ const store = useAppStore()
 
 const form = reactive({ ...store.config })
 const gainMode = ref(form.gain === 'auto' ? 'auto' : 'manual')
+const manualGainValue = ref(form.gain === 'auto' ? 40 : Number(form.gain) || 40)
 const devices  = ref([])
 const protocols = ref([])
 const loadingDevices   = ref(false)
@@ -146,6 +148,7 @@ const loadingProtocols = ref(false)
 
 watch(gainMode, v => {
   if (v === 'auto') form.gain = 'auto'
+  else form.gain = String(manualGainValue.value)
 })
 
 onMounted(() => {

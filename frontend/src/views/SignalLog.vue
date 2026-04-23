@@ -49,9 +49,9 @@ watch(() => store.logMessages.length, async () => {
 })
 
 function onScroll() {
-  // Disable autoscroll if user scrolls up
+  // Disable autoscroll if user scrolls away from the top (newest messages)
   if (logContainer.value) {
-    autoScroll.value = logContainer.value.scrollTop < 20
+    autoScroll.value = logContainer.value.scrollTop === 0
   }
 }
 

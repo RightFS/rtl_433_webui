@@ -310,7 +310,11 @@ void WebServer::setupRoutes() {
                     resp["success"] = true;
                     conn.send_text(resp.dump());
                 }
-            } catch (...) {}
+            } catch (const std::exception& e) {
+                std::cerr << "WebSocket message parse error: " << e.what() << "\n";
+            } catch (...) {
+                std::cerr << "WebSocket message parse error: unknown exception\n";
+            }
         });
 
     // Static files - SPA catch-all

@@ -187,7 +187,7 @@ void Rtl433Manager::readerThread() {
                     json log_msg;
                     log_msg["type"]    = "log";
                     log_msg["message"] = line;
-                    if (m_data_cb) m_data_cb(log_msg.dump());
+                    m_data_cb(log_msg.dump());
                 }
             }
         }

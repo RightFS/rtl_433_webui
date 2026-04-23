@@ -69,7 +69,10 @@ int main(int argc, char* argv[]) {
     }
 
     g_mgr = std::make_shared<Rtl433Manager>();
-    g_mgr->start(cfg);  // Attempt auto-start; non-fatal if rtl_433 not present
+    if (!g_mgr->start(cfg)) {
+        std::cerr << "Note: rtl_433 auto-start failed (binary not found or device unavailable).\n"
+                  << "Use the web UI to start it manually after configuring the correct path/device.\n";
+    }
 
     g_server = std::make_shared<WebServer>(g_mgr, port);
 
