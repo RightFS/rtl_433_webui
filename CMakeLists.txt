@@ -6,6 +6,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
 
+# ── Third-party: standalone Asio (required by Crow) ───────────────────────
+# Must be fetched before Crow so that ASIO_INCLUDE_DIR is available when
+# Crow's CMakeLists calls find_package(asio).
+FetchContent_Declare(
+  asio
+  GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
+  GIT_TAG asio-1-30-2
+)
+FetchContent_MakeAvailable(asio)
+set(ASIO_INCLUDE_DIR ${asio_SOURCE_DIR}/asio/include CACHE PATH "Asio include directory" FORCE)
+
 # ── Third-party: Crow (HTTP + WebSocket) ───────────────────────────────────
 FetchContent_Declare(
   Crow
@@ -21,14 +32,6 @@ FetchContent_Declare(
   GIT_TAG v3.11.3
 )
 FetchContent_MakeAvailable(nlohmann_json)
-
-# ── Third-party: standalone Asio (required by Crow) ───────────────────────
-FetchContent_Declare(
-  asio
-  GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
-  GIT_TAG asio-1-30-2
-)
-FetchContent_MakeAvailable(asio)
 
 # ── rtl_433 submodule – build the r_433 static library ────────────────────
 # Override cache vars BEFORE add_subdirectory so rtl_433's CMakeLists picks
