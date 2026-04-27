@@ -17,13 +17,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(asio)
 set(ASIO_INCLUDE_DIR ${asio_SOURCE_DIR}/asio/include CACHE PATH "Asio include directory" FORCE)
 
-# ── Third-party: Crow (HTTP + WebSocket) ───────────────────────────────────
-FetchContent_Declare(
-  Crow
-  GIT_REPOSITORY https://github.com/CrowCpp/Crow.git
-  GIT_TAG v1.2.0
-)
-FetchContent_MakeAvailable(Crow)
+
 
 # ── Third-party: nlohmann/json ────────────────────────────────────────────
 FetchContent_Declare(
@@ -33,26 +27,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nlohmann_json)
 
-# ── Prevent duplicate "uninstall" target from rtl_433 ──────────────────────
-# Crow already creates an "uninstall" target. Since rtl_433 (a git submodule)
-# also tries to create one, we intercept add_custom_target to skip it.
-macro(_add_custom_target_original)
-endmacro()
-
-function(add_custom_target name)
-  if(name STREQUAL "uninstall" AND TARGET uninstall)
-    message(STATUS "Skipping duplicate uninstall target (already defined by Crow)")
-    return()
-  endif()
-  _add_custom_target_original(${name} ${ARGN})
-endfunction()
-
-# Store the original add_custom_target before override
-if(NOT COMMAND _add_custom_target_original)
-  rename_command(add_custom_target _add_custom_target_original)
-endif()
-
-
 # ── rtl_433 submodule – build the r_433 static library ────────────────────
 # Override cache vars BEFORE add_subdirectory so rtl_433's CMakeLists picks
 # them up.  AUTO means "optional – don't FATAL_ERROR if not found".
@@ -61,13 +35,20 @@ set(ENABLE_SOAPYSDR "AUTO" CACHE STRING "Enable SoapySDR support" FORCE)
 # We don't need OpenSSL inside rtl_433 for our use case.
 set(ENABLE_OPENSSL  "OFF"  CACHE STRING "Enable OpenSSL" FORCE)
 
+# Allow duplicate "uninstall" target (CMP0002: allow as old policy)
+set(BUILD_DOCUMENTATION OFF CACHE BOOL "" FORCE)
+set(CMAKE_DISABLE_FIND_PACKAGE_Doxygen TRUE CACHE BOOL "" FORCE)
 add_subdirectory(rtl_433 rtl_433_build EXCLUDE_FROM_ALL)
+# cmake_policy(SET CMP0002 NEW)
 # 'r_433' target is now available.  The rtl_433 executable is excluded.
 
-# Restore original add_custom_target
-rename_command(add_custom_target _add_custom_target_override)
-rename_command(_add_custom_target_original add_custom_target)
-
+# ── Third-party: Crow (HTTP + WebSocket) ───────────────────────────────────
+FetchContent_Declare(
+  Crow
+  GIT_REPOSITORY https://github.com/CrowCpp/Crow.git
+  GIT_TAG v1.2.0
+)
+FetchContent_MakeAvailable(Crow)
 # ── Frontend build ────────────────────────────────────────────────────────
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 find_program(NPM_EXECUTABLE npm)
