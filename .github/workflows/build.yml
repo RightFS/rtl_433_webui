@@ -65,7 +65,7 @@ jobs:
             build-essential \
             libusb-1.0-0-dev \
             python3 \
-            doxygen
+            doxygen graphviz
 
       - name: Download frontend dist
         uses: actions/download-artifact@v4
