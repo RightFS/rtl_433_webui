@@ -33,6 +33,26 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nlohmann_json)
 
+# ── Prevent duplicate "uninstall" target from rtl_433 ──────────────────────
+# Crow already creates an "uninstall" target. Since rtl_433 (a git submodule)
+# also tries to create one, we intercept add_custom_target to skip it.
+macro(_add_custom_target_original)
+endmacro()
+
+function(add_custom_target name)
+  if(name STREQUAL "uninstall" AND TARGET uninstall)
+    message(STATUS "Skipping duplicate uninstall target (already defined by Crow)")
+    return()
+  endif()
+  _add_custom_target_original(${name} ${ARGN})
+endfunction()
+
+# Store the original add_custom_target before override
+if(NOT COMMAND _add_custom_target_original)
+  rename_command(add_custom_target _add_custom_target_original)
+endif()
+
+
 # ── rtl_433 submodule – build the r_433 static library ────────────────────
 # Override cache vars BEFORE add_subdirectory so rtl_433's CMakeLists picks
 # them up.  AUTO means "optional – don't FATAL_ERROR if not found".
@@ -43,6 +63,10 @@ set(ENABLE_OPENSSL  "OFF"  CACHE STRING "Enable OpenSSL" FORCE)
 
 add_subdirectory(rtl_433 rtl_433_build EXCLUDE_FROM_ALL)
 # 'r_433' target is now available.  The rtl_433 executable is excluded.
+
+# Restore original add_custom_target
+rename_command(add_custom_target _add_custom_target_override)
+rename_command(_add_custom_target_original add_custom_target)
 
 # ── Frontend build ────────────────────────────────────────────────────────
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
